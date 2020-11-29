@@ -8,10 +8,13 @@ connection = pymysql.connect(host='localhost',
 try:
     # Run a query
     with connection.cursor() as cursor:
-        sql = "SELECT * FROM Artist;"
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        print(result)
+        list_of_names = ['fred', 'Fred']
+        # Prepare a string with same number of placeholders as in list_of_names
+        format_strings = ','.join(['%s'] * len(list_of_names))
+        cursor.execute(
+            "DELETE FROM Friends WHERE name in ({});".format(format_strings),
+            list_of_names)
+        connection.commit()
 finally:
     # Close the connection, regardless of whether
     # or not the above was successful
